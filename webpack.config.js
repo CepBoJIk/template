@@ -12,10 +12,10 @@ module.exports = function(env) {
     return merge([common, sass]);
   }
   if (env === 'production') {
-    return merge([common, sassAndAutoprefixer, babel, uglify]);
+    return merge([common, eslint, sassAndAutoprefixer, babel, uglify]);
   }
   if (env === 'production:github') {
-    return merge([common, sassAndAutoprefixer, babel, uglify, githubPagesPrefix]);
+    return merge([common, eslint, sassAndAutoprefixer, babel, uglify, githubPagesPrefix]);
   }
 }
 
@@ -30,22 +30,13 @@ const common = {
   module: {
     rules: [
       {
-        enforce: "pre",
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: "eslint-loader",
-        options: {
-          failOnError: true
-        }
-      },
-      {
         test: /\.(html)$/,
         use: {
           loader: 'html-loader',
         }
       },
       {
-        test: /\.(png|jpg|gif)$/,
+        test: /\.(png|jpg|gif|svg)$/,
         loader: 'file-loader?name=img/[name].[ext]'
       }
     ]
@@ -109,6 +100,22 @@ const sassAndAutoprefixer = {
         test: /\.s?css$/,
         use: ["style-loader", "css-loader", "postcss-loader", 'sass-loader']
       }
+    ]
+  }
+}
+
+const eslint = {
+  module: {
+    rules: [
+      {
+        enforce: "pre",
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "eslint-loader",
+        options: {
+          failOnError: true
+        }
+      },
     ]
   }
 }
